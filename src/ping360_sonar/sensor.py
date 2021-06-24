@@ -4,7 +4,7 @@
 # A device API for the Blue Robotics Ping360 scanning sonar
 
 from brping import definitions
-from device import PingDevice
+from ping360_sonar.device import PingDevice
 from brping import pingmessage
 import serial
 import time
@@ -163,6 +163,7 @@ class Ping360(PingDevice):
         return self.wait_message([definitions.PING360_DEVICE_DATA, definitions.COMMON_NACK], 4.0)
 
     def set_transmit_duration(self, transmit_duration):
+
         self.control_transducer(
             self._mode,
             self._gain_setting,

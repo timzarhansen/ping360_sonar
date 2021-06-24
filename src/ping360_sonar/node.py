@@ -12,7 +12,7 @@ from sensor_msgs.msg import LaserScan
 
 from ping360_sonar.cfg import sonarConfig
 from ping360_sonar.msg import SonarEcho
-from sensor import Ping360
+from ping360_sonar.sensor import Ping360
 
 # Global Variables
 
@@ -360,9 +360,16 @@ def getSamplePeriod(samplePeriod, _samplePeriodTickDuration=25e-9):
 
 def updateSonarConfig(sensor, gain, transmitFrequency, transmitDuration, samplePeriod, numberOfSamples):
     global updated
+    #print("worked1")
     sensor.set_gain_setting(gain)
+    #print("worked2")
     sensor.set_transmit_frequency(transmitFrequency)
-    sensor.set_transmit_duration(transmitDuration)
-    sensor.set_sample_period(samplePeriod)
+    #print("worked3")
+    #print(transmitDuration)
+    sensor.set_transmit_duration(int(transmitDuration))
+    #print("worked4")
+    sensor.set_sample_period(int(samplePeriod))
+    #print("worked5")
     sensor.set_number_of_samples(numberOfSamples)
+    #print("worked6")
     updated = False
