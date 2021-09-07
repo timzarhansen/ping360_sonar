@@ -4,6 +4,7 @@ from math import cos, pi, sin
 
 import numpy as np
 import rospy
+import cv2
 
 from cv_bridge import CvBridge, CvBridgeError
 from dynamic_reconfigure.server import Server
