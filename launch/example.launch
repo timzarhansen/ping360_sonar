@@ -21,4 +21,8 @@
         <param name="minAngle" value="0"/> 
         <param name="oscillate" value="false"/>
     </node>
+    <!-- Start the image data topic as well(in different thread for speed -->
+    <node pkg="ping360_sonar" type="conversionSonarData" name="conversionSonarData" output="screen" required="true">
+    </node>
+
 </launch>
