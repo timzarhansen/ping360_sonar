@@ -5,4 +5,5 @@ uint16 number_of_samples
 uint16 transmit_frequency # [kHz]
 uint16 speed_of_sound # [m/s]
 uint8 range      #  range value [m]
+uint8 step_size  #  steps for each measurement(from 1 to 10)
 uint8[] intensities    # intensity data [0-255].  This is the actual data received from the sonar

@@ -9,7 +9,7 @@
 #include "sensor_msgs/Image.h"
 #include <cv_bridge/cv_bridge.h>
 
-
+double rotationOfSonarOnRobot = 200;
 cv::Mat sonarImage;
 ros::Publisher publisher;
 std::vector<double> linspace(double start_in, double end_in, int num_in) {
@@ -55,10 +55,11 @@ void imageDataGenerationCallback(const ping360_sonar::SonarEcho::ConstPtr &msg){
         double stepSize = 1;
         std::vector<double> linspaceVector = linspace(-stepSize/2,stepSize/2,10);
         for(const auto& value: linspaceVector) {
-            double theta = 2 * M_PI * (msg->angle + value) / 400.0;
+            //minus because of the coordinate change from z to top to z to bottom
+            double theta = 2 * M_PI * (msg->angle + value + rotationOfSonarOnRobot) / 400.0;
             double x = i * cos(theta);
             double y = i * sin(theta);
-            sonarImage.at<uchar>((int)(((double)sonarImage.size[0] / 2.0) + x)-1,(int)(((double)sonarImage.size[0] / 2.0) + y)-1) = color*1.2;
+            sonarImage.at<uchar>((int)(((double)sonarImage.size[0] / 2.0) - x)-1,(int)(((double)sonarImage.size[0] / 2.0) + y)-1) = color*1.2;
         }
     }
     cv::rectangle(sonarImage,cv::Point(0,0),cv::Point(65,65),0,cv::FILLED);
@@ -77,7 +78,7 @@ void imageDataGenerationCallback(const ping360_sonar::SonarEcho::ConstPtr &msg){
 
 int main(int argc, char *argv[])
 {
-    ros::init(argc, argv, "guiofbluerov2");
+    ros::init(argc, argv, "conversionofsonardatatoimage");
     ros::start();
     ros::NodeHandle n_;
     //has to be squared
@@ -87,8 +88,8 @@ int main(int argc, char *argv[])
 
     publisher = n_.advertise<sensor_msgs::Image>("sonar/image", 10);
 
-    ros::Subscriber subscriberDataSonar = n_.subscribe("sonar/intensity",1000,imageDataGenerationCallback);
-
+//    ros::Subscriber subscriberDataSonar = n_.subscribe("sonar/intensity",1000,imageDataGenerationCallback);
+    ros::Subscriber subscriberDataSonar = n_.subscribe("ping360_node/sonar/data",1000,imageDataGenerationCallback);
 
     ros::spin();
     return 1;
