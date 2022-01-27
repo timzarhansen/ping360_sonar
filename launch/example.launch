@@ -10,7 +10,7 @@
         <param name="step" value="10"/>
         <param name="numberOfSamples" value="1200"/>
         <param name="transmitFrequency" value="750"/>
-        <param name="sonarRange" value="2"/>
+        <param name="sonarRange" value="10"/>
         <param name="speedOfSound" value="1500"/>
         <param name="queueSize" value="1"/>
         <param name="threshold" value="10"/>
@@ -21,7 +21,7 @@
         <param name="minAngle" value="0"/> 
         <param name="oscillate" value="false"/>
     </node>
-    <!-- Start the image data topic as well(in different thread for speed -->
+    <!-- Start the image data topic as well(in different thread and c++ for speed -->
     <node pkg="ping360_sonar" type="conversionSonarData" name="conversionSonarData" output="screen" required="true">
     </node>
 

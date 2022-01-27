@@ -14,6 +14,7 @@ from sensor_msgs.msg import LaserScan
 from ping360_sonar.cfg import sonarConfig
 from ping360_sonar.msg import SonarEcho
 from ping360_sonar.sensor import Ping360
+from ping360_sonar.srv import sendingSonarConfig
 
 # Global Variables
 
@@ -64,6 +65,26 @@ def callback(config, level):
     firstRequest = False
     return config
 
+def handeSonarConfigService(req):
+    global updated, gain, numberOfSamples, transmitFrequency, transmitDuration, sonarRange, \
+        speedOfSound, samplePeriod, debug, step, imgSize, queue_size, threshold, firstRequest
+    rospy.loginfo("Reconfigure Request")
+    # Update Ping 360 Parameters
+    # gain = config['gain']
+    # numberOfSamples = config['numberOfSamples']
+    # transmitFrequency = config['transmitFrequency']
+    sonarRange = req.range
+    step = req.stepSize
+    samplePeriod = calculateSamplePeriod(
+        sonarRange, numberOfSamples, speedOfSound)
+    transmitDuration = adjustTransmitDuration(
+        sonarRange, samplePeriod, speedOfSound)
+    # debug = config['debug']
+    # step = config['step']
+    # queue_size = config['queueSize']
+    # threshold = config['threshold']
+    updated = True
+    return True
 
 def main():
     global updated, gain, numberOfSamples, transmitFrequency, transmitDuration, sonarRange, \
@@ -129,9 +150,9 @@ def main():
     sensor = Ping360(device, baudrate)
     print("Initialized Sensor: %s" % sensor.initialize())
 
-    # Dynamic reconfigure server
+    # Dynamic reconfigure server and service server
     srv = Server(sonarConfig, callback)
-
+    s = rospy.Service('changeParametersSonar', sendingSonarConfig, handeSonarConfigService)
     # Global Variables
     angle = minAngle
     bridge = CvBridge()
@@ -165,12 +186,13 @@ def main():
         if updated:
             updateSonarConfig(sensor, gain, transmitFrequency,
                               transmitDuration, samplePeriod, numberOfSamples)
+            angle = minAngle
         # Get sonar response
         data = getSonarData(sensor, angle)
 
         # Contruct and publish Sonar data msg
         if enableDataTopic:
-            rawDataMsg = generateRawMsg(angle, data, gain, numberOfSamples, transmitFrequency, speedOfSound, sonarRange)
+            rawDataMsg = generateRawMsg(angle, data, gain, numberOfSamples, transmitFrequency, speedOfSound, sonarRange, step)
             rawPub.publish(rawDataMsg)
 
         # Prepare scan msg
@@ -221,7 +243,7 @@ def main():
 
         # calculate next angle step
         angle += sign * step
-        print(angle)
+        # print(angle)
 
         angle = wrap_angle(angle)
 
@@ -263,7 +285,7 @@ def getSonarData(sensor, angle):
     return [k for k in data]
 
 
-def generateRawMsg(angle, data, gain, numberOfSamples, transmitFrequency, speedOfSound, sonarRange):
+def generateRawMsg(angle, data, gain, numberOfSamples, transmitFrequency, speedOfSound, sonarRange,stepSize):
     """
     Generates the raw message for the data topic
     Args:
@@ -286,6 +308,7 @@ def generateRawMsg(angle, data, gain, numberOfSamples, transmitFrequency, speedO
     msg.transmit_frequency = transmitFrequency
     msg.speed_of_sound = speedOfSound
     msg.range = sonarRange
+    msg.step_size = stepSize
     msg.intensities = data
     return msg
 
