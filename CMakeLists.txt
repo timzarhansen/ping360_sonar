@@ -17,6 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
         message_generation
         roslint
         roscpp
+        genmsg
 )
 find_package(OpenCV REQUIRED)
 catkin_python_setup()
