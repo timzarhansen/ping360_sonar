@@ -61,8 +61,8 @@ catkin_package(
 )
 
 include_directories(
-include
-  ${catkin_INCLUDE_DIRS}
+    include
+    ${catkin_INCLUDE_DIRS}
     ${OpenCV_INCLUDE_DIRS}
 )
 
@@ -76,4 +76,5 @@ install(PROGRAMS
 
 add_executable(conversionSonarData src/createImageOfSonarData.cpp)
 target_link_libraries(conversionSonarData ${catkin_LIBRARIES} ${OpenCV_LIBS})
+add_dependencies(conversionSonarData ping360_sonar_generate_messages_cpp)
 
