@@ -148,8 +148,12 @@ def main():
 
     # Initialize sensor
     sensor = Ping360(device, baudrate)
+    while sensor.initialize():
+        print("Initialized Sensor: %s" % sensor.initialize())
+        print("didnt work trying again in 1 second")
+        time.sleep(1)
+        sensor = Ping360(device, baudrate)
     print("Initialized Sensor: %s" % sensor.initialize())
-
     # Dynamic reconfigure server and service server
     srv = Server(sonarConfig, callback)
     s = rospy.Service('changeParametersSonar', sendingSonarConfig, handeSonarConfigService)
