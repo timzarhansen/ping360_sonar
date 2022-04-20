@@ -5,7 +5,7 @@ from math import cos, pi, sin
 import numpy as np
 import rospy
 import cv2
-
+import time
 from cv_bridge import CvBridge, CvBridgeError
 from dynamic_reconfigure.server import Server
 from sensor_msgs.msg import Image
@@ -148,7 +148,7 @@ def main():
 
     # Initialize sensor
     sensor = Ping360(device, baudrate)
-    while sensor.initialize():
+    while not sensor.initialize():
         print("Initialized Sensor: %s" % sensor.initialize())
         print("didnt work trying again in 1 second")
         time.sleep(1)
