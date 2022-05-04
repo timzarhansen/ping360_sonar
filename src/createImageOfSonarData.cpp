@@ -40,6 +40,13 @@ std::vector<double> linspace(double start_in, double end_in, int num_in) {
 }
 
 void imageDataGenerationCallback(const ping360_sonar::SonarEcho::ConstPtr &msg){
+//    std::cout << "msg: " << std::endl;
+//    std::cout << msg->angle << std::endl;
+//    std::cout << msg->number_of_samples << std::endl;
+//    std::cout << msg->range << std::endl;
+//    std::cout << msg->step_size << std::endl;
+
+
 
 //    msg->number_of_samples
 //    msg->range;
