@@ -3,7 +3,8 @@
 //
 
 #include "ros/ros.h"
-#include "ping360_sonar/SonarEcho.h"
+//#include "ping360_sonar/SonarEcho.h"
+#include "commonbluerovmsg/SonarEcho2.h"
 #include <opencv4/opencv2/core.hpp>
 #include <opencv4/opencv2/opencv.hpp>
 #include "sensor_msgs/Image.h"
@@ -39,7 +40,7 @@ std::vector<double> linspace(double start_in, double end_in, int num_in) {
     return linspaced;
 }
 
-void imageDataGenerationCallback(const ping360_sonar::SonarEcho::ConstPtr &msg){
+void imageDataGenerationCallback(const commonbluerovmsg::SonarEcho2::ConstPtr &msg){
 //    std::cout << "msg: " << std::endl;
 //    std::cout << msg->angle << std::endl;
 //    std::cout << msg->number_of_samples << std::endl;

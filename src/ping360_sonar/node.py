@@ -16,6 +16,8 @@ from ping360_sonar.msg import SonarEcho
 from ping360_sonar.sensor import Ping360
 from ping360_sonar.srv import sendingSonarConfig
 
+from commonbluerovmsg.msg import SonarEcho2
+
 # Global Variables
 
 device = None
@@ -167,7 +169,7 @@ def main():
     # imagePub = rospy.Publisher(
     #     "/ping360_node/sonar/images", Image, queue_size=queue_size)
     rawPub = rospy.Publisher("sonar/intensity",
-                             SonarEcho, queue_size=queue_size)
+                             SonarEcho2, queue_size=queue_size)
     # laserPub = rospy.Publisher(
     #     "/ping360_node/sonar/scan", LaserScan, queue_size=queue_size)
 
@@ -305,7 +307,7 @@ def generateRawMsg(angle, data, gain, numberOfSamples, transmitFrequency, speedO
     Returns:
         SonarEcho: message
      """
-    msg = SonarEcho()
+    msg = SonarEcho2()
     msg.header.stamp = rospy.Time.now()
     msg.header.frame_id = 'sonar_frame'
     msg.angle = angle
