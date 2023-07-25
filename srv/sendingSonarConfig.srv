@@ -1,4 +1,6 @@
 int64 stepSize
 int64 range
+int64 numberOfSamples
+int64 frequencyRange
 ---
 bool worked

@@ -1,5 +1,5 @@
-Header header            #header info
-float32 angle               # the measurement angle [rad]
+Header header            # header info
+float32 angle            # the measurement angle [rad]
 uint8 gain  # Sonar Gain
 uint16 number_of_samples 
 uint16 transmit_frequency # [kHz]

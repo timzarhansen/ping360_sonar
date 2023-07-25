@@ -75,8 +75,14 @@ def handeSonarConfigService(req):
     # gain = config['gain']
     # numberOfSamples = config['numberOfSamples']
     # transmitFrequency = config['transmitFrequency']
+    print(req.numberOfSamples)
+    print(req.frequencyRange)
+
     sonarRange = req.range
     step = req.stepSize
+    numberOfSamples = req.numberOfSamples
+    transmitFrequency = req.frequencyRange
+
     samplePeriod = calculateSamplePeriod(
         sonarRange, numberOfSamples, speedOfSound)
     transmitDuration = adjustTransmitDuration(
