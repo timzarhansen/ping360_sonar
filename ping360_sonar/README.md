@@ -151,7 +151,7 @@ Please report bugs and request features using the [Issue Tracker](https://github
 [cv_bridge]: http://wiki.ros.org/cv_bridge
 [sensor_msgs/Image]: http://docs.ros.org/melodic/api/sensor_msgs/html/msg/Image.html
 [Ping360]: https://bluerobotics.com/store/sensors-sonars-cameras/sonar/ping360-sonar-r1-rp/
-[msg/SonarEcho]: /msg/SonarEcho.msg
+[msg/SonarEcho]: /ping360_sonar_msgs/msg/SonarEcho.msg
 [sensor_msgs/LaserScan]: http://docs.ros.org/melodic/api/sensor_msgs/html/msg/LaserScan.html
 
 ## Contributors
