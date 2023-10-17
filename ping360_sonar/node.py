@@ -1,31 +1,28 @@
 #!/usr/bin/env python
 import sys
-from math import pi
 
 import numpy as np
 # import rclpy
 import rclpy
 from rclpy.node import Node
 import time
-from cv_bridge import CvBridge, CvBridgeError
+from cv_bridge import CvBridge
 # from dynamic_reconfigure.server import Server
-from sensor_msgs.msg import LaserScan
-import ping360_sonar_msgs
-# from ping360_sonar.cfg import sonarConfig
-from ping360_sonar.ping360_sonar.sensor import Ping360
+# from ping360_sonar_old.cfg import sonarConfig
+from ping360_sonar.sensor import Ping360
 from ping360_sonar_msgs.msg import SonarEcho
 
-class ping360_node_ros(rclpy.node.Node):
+class ping360_node_ros(Node):
 
     def __init__(self):
 
         super().__init__('ping360_sonar')
-        self.declare_parameter('device', "/dev/ttyUSB0")
+        self.declare_parameter('device', "/dev/ttyUSB2")
         self.declare_parameter('baudrate', 115200)
         self.declare_parameter('gain', 0)
         self.declare_parameter('numberOfSamples', 200)
         self.declare_parameter('transmitFrequency', 740)
-        self.declare_parameter('sonarRange', 1)
+        self.declare_parameter('sonarRange', 7)
         self.declare_parameter('speedOfSound', 1500)
         self.declare_parameter('debug', False)
         self.declare_parameter('threshold', 200)
@@ -33,7 +30,7 @@ class ping360_node_ros(rclpy.node.Node):
         self.declare_parameter('maxAngle', 400)
         self.declare_parameter('minAngle', 0)
         self.declare_parameter('oscillate', True)
-        self.declare_parameter('step', 1)
+        self.declare_parameter('step', 2)
         self.declare_parameter('imgSize', 500)
         self.declare_parameter('queueSize', 1)
 
@@ -45,8 +42,8 @@ class ping360_node_ros(rclpy.node.Node):
         self.sonarRange = self.get_parameter('sonarRange').get_parameter_value().integer_value
         self.speedOfSound = self.get_parameter('speedOfSound').get_parameter_value().integer_value
         self.step = self.get_parameter('step').get_parameter_value().integer_value
-        self.imgSize = self.get_parameter('imgSize').get_parameter_value().string_value
-        self.queue_size = self.get_parameter('queueSize').get_parameter_value().string_value
+        self.imgSize = self.get_parameter('imgSize').get_parameter_value().integer_value
+        self.queue_size = self.get_parameter('queueSize').get_parameter_value().integer_value
         self.threshold = self.get_parameter('threshold').get_parameter_value().integer_value
         self.debug = self.get_parameter('debug').get_parameter_value().bool_value
         self.enableDataTopic = self.get_parameter('enableDataTopic').get_parameter_value().bool_value
@@ -95,9 +92,9 @@ class ping360_node_ros(rclpy.node.Node):
         self.bridge = CvBridge()
 
 
-        self.rawPub = self.create_publisher("sonar/intensity",SonarEcho, queue_size=self.queue_size)
+        self.rawPub = self.create_publisher(SonarEcho,"sonar/intensity", self.queue_size)
         # laserPub = rclpy.Publisher(
-        #     "/ping360_node/sonar/scan", LaserScan, queue_size=queue_size)
+        #     "/ping360_node.py/sonar/scan", LaserScan, queue_size=queue_size)
 
         # Initialize and configure the sonar
         updateSonarConfig(self.sensor, self.gain, self.transmitFrequency,
@@ -133,30 +130,30 @@ class ping360_node_ros(rclpy.node.Node):
             self.rawPub.publish(rawDataMsg)
 
         # calculate next angle step
-        angle += self.sign * self.step
+        self.angle += self.sign * self.step
         # print(angle)
 
-        angle = wrap_angle(angle)
+        self.angle = wrap_angle(self.angle)
 
         if self.maxAngle > self.minAngle:
-            if angle >= self.maxAngle:
+            if self.angle >= self.maxAngle:
                 if not self.oscillate:
-                    angle = self.minAngle
+                    self.angle = self.minAngle
                 else:
-                    angle = self.maxAngle
+                    self.angle = self.maxAngle
                     sign = -1
 
-            if angle <= self.minAngle and self.oscillate:
+            if self.angle <= self.minAngle and self.oscillate:
                 self.sign = 1
                 self.angle = self.minAngle
         else:
-            if angle >= self.maxAngle and angle < self.minAngle:
+            if self.angle >= self.maxAngle and self.angle < self.minAngle:
                 if not self.oscillate:
-                    angle = self.minAngle
-                    sign = 1
+                    self.angle = self.minAngle
+                    self.sign = 1
                 else:
-                    angle = self.maxAngle
-                    sign = -1
+                    self.angle = self.maxAngle
+                    self.sign = -1
 
 
     # def callback(config, level):
@@ -353,9 +350,9 @@ def generateRawMsg(node,angle, data, gain, numberOfSamples, transmitFrequency, s
         SonarEcho: message
      """
     msg = SonarEcho()
-    msg.header.stamp = node.get_clock().now()
+    msg.header.stamp = node.get_clock().now().to_msg()
     msg.header.frame_id = 'sonar_frame'
-    msg.angle = angle
+    msg.angle = float(angle)
     msg.gain = gain
     msg.number_of_samples = numberOfSamples
     msg.transmit_frequency = transmitFrequency

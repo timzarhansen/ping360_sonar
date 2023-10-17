@@ -4,7 +4,7 @@
 # A device API for the Blue Robotics Ping360 scanning sonar
 
 from brping import definitions
-from ping360_sonar.ping360_sonar.device import PingDevice
+from ping360_sonar.device import PingDevice
 from brping import pingmessage
 
 
