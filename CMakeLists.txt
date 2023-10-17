@@ -31,7 +31,7 @@ ament_python_install_package(ping360_sonar)
 
 
 install(PROGRAMS
-        nodes/ping360_node.py
+        nodes/ping360_node
         DESTINATION lib/${PROJECT_NAME}
 )
 

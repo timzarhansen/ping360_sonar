@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
     publisher = n_.advertise<sensor_msgs::Image>("sonar/image", 10);
 
     ros::Subscriber subscriberDataSonar = n_.subscribe("sonar/intensity",1000,imageDataGenerationCallback);
-//    ros::Subscriber subscriberDataSonar = n_.subscribe("ping360_node.py/sonar/data",1000,imageDataGenerationCallback);
+//    ros::Subscriber subscriberDataSonar = n_.subscribe("ping360_node/sonar/data",1000,imageDataGenerationCallback);
 
     ros::spin();
     return 1;

@@ -94,7 +94,7 @@ class ping360_node_ros(Node):
 
         self.rawPub = self.create_publisher(SonarEcho,"sonar/intensity", self.queue_size)
         # laserPub = rclpy.Publisher(
-        #     "/ping360_node.py/sonar/scan", LaserScan, queue_size=queue_size)
+        #     "/ping360_node/sonar/scan", LaserScan, queue_size=queue_size)
 
         # Initialize and configure the sonar
         updateSonarConfig(self.sensor, self.gain, self.transmitFrequency,
