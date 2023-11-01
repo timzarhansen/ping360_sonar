@@ -5,6 +5,8 @@ import numpy as np
 # import rclpy
 import rclpy
 from rclpy.node import Node
+from rclpy.parameter import Parameter
+from rcl_interfaces.msg import SetParametersResult
 import time
 from cv_bridge import CvBridge
 # from dynamic_reconfigure.server import Server
@@ -17,7 +19,7 @@ class ping360_node_ros(Node):
     def __init__(self):
 
         super().__init__('ping360_sonar')
-        self.declare_parameter('device', "/dev/ttyUSB2")
+        self.declare_parameter('device', "/dev/ttyUSB0")
         self.declare_parameter('baudrate', 115200)
         self.declare_parameter('gain', 0)
         self.declare_parameter('numberOfSamples', 200)
@@ -50,9 +52,6 @@ class ping360_node_ros(Node):
         self.maxAngle = self.get_parameter('maxAngle').get_parameter_value().integer_value
         self.minAngle = self.get_parameter('minAngle').get_parameter_value().integer_value
         self.oscillate = self.get_parameter('oscillate').get_parameter_value().bool_value
-
-
-
 
 
         print(self.get_parameter('speedOfSound').get_parameter_value().integer_value)
@@ -112,9 +111,7 @@ class ping360_node_ros(Node):
         # print("test2")
         self.timer = self.create_timer(timer_period, self.sonarMeasurements)
 
-
-
-
+        self.add_on_set_parameters_callback(self.parameters_callback)
 
     def sonarMeasurements(self):
         if updated:
@@ -155,6 +152,79 @@ class ping360_node_ros(Node):
                     self.angle = self.maxAngle
                     self.sign = -1
 
+    def parameters_callback(self, params):
+        global updated
+
+        for param in params:
+            success = False
+            if param.name == 'device':
+                if param.type_ == Parameter.Type.STRING:
+                    if param.value.startswith('/dev/tty'):
+                        success = True
+                        self.device = param.value
+            if param.name == 'baudrate':
+                if param.type_ == Parameter.Type.INTEGER:
+                    success = True
+                    self.baudrate = param.value
+            if param.name == 'gain':
+                if param.type_ == Parameter.Type.INTEGER:
+                    success = True
+                    self.gain = param.value
+            if param.name == 'numberOfSamples':
+                if param.type_ == Parameter.Type.INTEGER:
+                    success = True
+                    self.numberOfSamples = param.value
+            if param.name == 'transmitFrequency':
+                if param.type_ == Parameter.Type.INTEGER:
+                    success = True
+                    self.transmitFrequency = param.value
+            if param.name == 'sonarRange':
+                if param.type_ == Parameter.Type.INTEGER:
+                    success = True
+                    self.sonarRange = param.value
+            if param.name == 'speedOfSound':
+                if param.type_ == Parameter.Type.INTEGER:
+                    success = True
+                    self.speedOfSound = param.value
+            if param.name == 'step':
+                if param.type_ == Parameter.Type.INTEGER:
+                    success = True
+                    self.step = param.value
+            if param.name == 'imgSize':
+                if param.type_ == Parameter.Type.INTEGER:
+                    success = True
+                    self.imgSize = param.value
+            if param.name == 'queueSize':
+                if param.type_ == Parameter.Type.INTEGER:
+                    success = True
+                    self.queue_size = param.value
+            if param.name == 'threshold':
+                if param.type_ == Parameter.Type.INTEGER:
+                    success = True
+                    self.threshold = param.value
+            if param.name == 'debug':
+                if param.type_ == Parameter.Type.BOOL:
+                    success = True
+                    self.debug = param.value
+            if param.name == 'enableDataTopic':
+                if param.type_ == Parameter.Type.BOOL:
+                    success = True
+                    self.enableDataTopic = param.value
+            if param.name == 'maxAngle':
+                if param.type_ == Parameter.Type.INTEGER:
+                    success = True
+                    self.maxAngle = param.value
+            if param.name == 'minAngle':
+                if param.type_ == Parameter.Type.INTEGER:
+                    success = True
+                    self.minAngle = param.value
+            if param.name == 'oscillate':
+                if param.type_ == Parameter.Type.BOOL:
+                    success = True
+                    self.oscillate = param.value
+        if success == True:
+            updated = True
+        return SetParametersResult(successful=success)
 
     # def callback(config, level):
     #     global updated, gain, numberOfSamples, transmitFrequency, transmitDuration, sonarRange, \
@@ -456,7 +526,7 @@ def updateSonarConfig(sensor, gain, transmitFrequency, transmitDuration, sampleP
     sensor.set_gain_setting(gain)
     #print("worked2")
     sensor.set_transmit_frequency(transmitFrequency)
-    #print("worked3")
+    print("worked3")
     #print(transmitDuration)
     sensor.set_transmit_duration(int(transmitDuration))
     #print("worked4")
