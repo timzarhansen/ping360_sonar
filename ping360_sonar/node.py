@@ -113,6 +113,9 @@ class ping360_node_ros(Node):
 
     def sonarMeasurements(self):
         if updated:
+            self.samplePeriod = calculateSamplePeriod(self.sonarRange, self.numberOfSamples, self.speedOfSound)
+            self.transmitDuration = adjustTransmitDuration(
+            self.sonarRange, self.samplePeriod, self.speedOfSound)
             updateSonarConfig(self.sensor, self.gain, self.transmitFrequency,
                               self.transmitDuration, self.samplePeriod, self.numberOfSamples)
             angle = self.minAngle
