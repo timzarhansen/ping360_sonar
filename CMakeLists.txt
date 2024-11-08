@@ -25,18 +25,18 @@ find_package(builtin_interfaces REQUIRED)
 
 ament_python_install_package(ping360_sonar)
 
-add_executable(visualizationPing360 src/visualizationSonarImage.cpp)
-ament_target_dependencies(visualizationPing360 rclcpp std_msgs sensor_msgs ping360_sonar_msgs cv_bridge)
+#add_executable(visualizationPing360 src/visualizationSonarImage.cpp)
+#ament_target_dependencies(visualizationPing360 rclcpp std_msgs sensor_msgs ping360_sonar_msgs cv_bridge)
 
 install(PROGRAMS
         nodes/ping360_node
         DESTINATION lib/${PROJECT_NAME}
 )
 
-install(TARGETS
-        visualizationPing360
-        DESTINATION lib/${PROJECT_NAME}
-)
+#install(TARGETS
+#        visualizationPing360
+#        DESTINATION lib/${PROJECT_NAME}
+#)
 
 
 
